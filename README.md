@@ -1,27 +1,52 @@
-# Y
+# Secure Angular application using Gravitee Access Management 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.3.
 
-## Development server
+## Start Gravitee Access Management
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+In the `gravitee-am` directory, you can find a Docker Compose descriptor to start AM.
 
-## Code scaffolding
+```bash
+cd gravitee-am
+docker compose up
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+The script `gravitee-am/initialization/sh` allows you to configure AM to secure the application.
 
-## Build
+```bash
+cd gravitee-am
+./initialization.sh
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## How to run the application
 
-## Running unit tests
+First fetch the dependencies with `yarn`.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Create an `environments/environment.local.ts` file with
 
-## Running end-to-end tests
+```typescript
+export const environment = {
+    production: false,
+    auth: {
+        clientId: "VALUE PROVIDED BY INITIALIZATION SCRIPT",
+        loginUrl: "http://localhost/am/local/oauth/authorize",
+        logoutUrl: "http://localhost/am/local/logout",
+        tokenEndpoint: "http://localhost/am/local/oauth/token",
+        revocationEndpoint: "http://localhost/am/local/oauth/revoke",
+        userinfoEndpoint: "http://localhost/am/local/oidc/userinfo",
+        issuer: "http://localhost/am/local/oidc",
+        redirectUri: `${window.location.origin}`,
+        postLogoutRedirectUri: `${window.location.origin}`,
+        responseType: "code",
+        scope: "openid profile email",
+        skipIssuerCheck: false,
+        requireHttps: false,
+    },
+};
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Run `ng serve` for a dev server. 
 
-## Further help
+Navigate to `http://localhost:4200/`.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+You can login with `alice/pass`.
